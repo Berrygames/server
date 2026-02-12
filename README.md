@@ -13,3 +13,11 @@ bun run index.ts
 ```
 
 This project was created using `bun init` in bun v1.3.6. [Bun](https://bun.com) is a fast all-in-one JavaScript runtime.
+
+# to do
+
+[ ] Daily Credits / Pegged to roles
+[ ] Store / Rewards
+[ ] Gambling: Roulette / Blackjack / Higher-lower / Coinflip / Dice roll / RPS / Lucky number/ Mine sweeper /
+[ ] Blacktea/ Greentea/ Redtea
+[ ] Flag game

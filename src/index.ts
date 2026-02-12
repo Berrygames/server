@@ -1,11 +1,17 @@
 import "dotenv/config";
 import express from "express";
 import { Client, GatewayIntentBits, InteractionType } from "discord.js";
+import getBerryCommand from "./commands/berry";
+import berryLeaderboardCommand from "./commands/berryleaderboard";
+import berryRemoveCommand from "./commands/berryremove";
+import pingCommand from "./commands/ping";
+import { fetch } from "bun";
+import berryAddCommand from "./commands/berryadd";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const API_URL = "http://localhost:8787"; // or your ngrok URL
+const API_URL = "http://localhost:8787";
 
 const client = new Client({
     intents: [
@@ -15,52 +21,76 @@ const client = new Client({
     ],
 });
 
-client.on("clientReady", () => {
+client.on("clientReady", async () => {
     console.log(`Logged in as ${client.user?.tag}!`);
+
+    try {
+        const emojis = await client.application?.emojis.fetch();
+        const existingEmoji = emojis?.find((emoji) => emoji.name === "berry");
+
+        if (!existingEmoji) {
+            const filepath = "assets/belli.png";
+            console.log("Full path:", `${process.cwd()}/${filepath}`);
+            console.log("File exists:", await Bun.file(filepath).exists());
+
+            const file = Bun.file(filepath);
+            const arrayBuffer = await file.arrayBuffer();
+            const base64Image = `data:image/png;base64,${Buffer.from(arrayBuffer).toString("base64")}`;
+
+            const response = await fetch(
+                `https://discord.com/api/v10/applications/${client.application?.id}/emojis`,
+                {
+                    method: "POST",
+                    headers: {
+                        Authorization: `Bot ${process.env.DISCORD_TOKEN}`,
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        name: "berry",
+                        image: base64Image,
+                    }),
+                },
+            );
+            const result = await response.json();
+            console.log("✅ Created application emoji:", result);
+        } else {
+            console.log(
+                "✅ Application emoji already exists:",
+                existingEmoji.id,
+            );
+        }
+    } catch (error) {
+        console.error("❌ Error creating application emoji:", error);
+    }
 });
 
 client.on("messageCreate", async (message) => {
-    if (message.content === "?berry") {
-        const res = fetch(
-            `${API_URL}/berry/${message.author.id}?guildId=${message.guildId}`,
-        );
-        const data = await res.then((res) => res.json());
-        message.reply(`You have ${data.berries} berries!`);
+    if (message.author.bot) return;
+
+    if (message.content === "?ping") {
+        pingCommand(message);
     }
-
-    if (message.content.startsWith("?giveberry")) {
-        const mentionedUser = message.mentions.users.first();
-
-        if (!mentionedUser) {
-            message.reply("Please mention a user to give a berry to.");
-            return;
-        }
-        console.log(
-            `Giving berry to ${mentionedUser.username} (${mentionedUser.id}) in guild ${message.guildId}`,
-        );
-
-        try {
-            const res = await fetch(`${API_URL}/berry/give`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    toUserId: mentionedUser.id,
-                    guildId: message.guildId,
-                    amount: 100,
-                }),
-            });
-
-            const data = await res.json();
-            console.log(data);
-            message.reply(
-                `Gave 100 berries to ${mentionedUser.username}! They now have ${data.newCount} berries.`,
-            );
-        } catch (error) {
-            console.error("Error giving berry:", error);
-            message.reply("An error occurred while trying to give a berry.");
-        }
+    if (message.content === "?berry" || message.content === "?b") {
+        getBerryCommand(API_URL, message, client);
+    }
+    if (
+        message.content.startsWith("?berryadd") ||
+        message.content.startsWith("?ba")
+    ) {
+        berryAddCommand(API_URL, message);
+    }
+    if (
+        message.content.startsWith("?berryremove") ||
+        message.content.startsWith("?br")
+    ) {
+        berryRemoveCommand(API_URL, message);
+    }
+    if (
+        message.content === "?berryleaderboard" ||
+        message.content === "?berrylb" ||
+        message.content === "?lb"
+    ) {
+        berryLeaderboardCommand(API_URL, message);
     }
 });
 
