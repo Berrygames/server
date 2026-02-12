@@ -39,16 +39,15 @@ export default async function roleIncomeCommand(
 
     if (method === "list") {
         try {
-            const res = await fetch(`${url}/role/income`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
+            const res = await fetch(
+                `${url}/role/income?guildId=${message.guildId}`,
+                {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
                 },
-                body: JSON.stringify({
-                    method: "list",
-                    guildId: message.guildId,
-                }),
-            });
+            );
 
             const data = (await res.json()) as any;
             console.log("Fetched role income list:", data);

@@ -8,6 +8,7 @@ import pingCommand from "./commands/ping";
 import { fetch } from "bun";
 import berryAddCommand from "./commands/berryadd";
 import roleIncomeCommand from "./commands/roleIncome";
+import collectCommand from "./commands/collect";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -95,6 +96,9 @@ client.on("messageCreate", async (message) => {
     }
     if (message.content.startsWith("?role-income")) {
         roleIncomeCommand(API_URL, message, client);
+    }
+    if (message.content.startsWith("?collect")) {
+        collectCommand(API_URL, message, client);
     }
 });
 
