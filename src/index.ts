@@ -7,6 +7,7 @@ import berryRemoveCommand from "./commands/berryremove";
 import pingCommand from "./commands/ping";
 import { fetch } from "bun";
 import berryAddCommand from "./commands/berryadd";
+import roleIncomeCommand from "./commands/roleIncome";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -91,6 +92,9 @@ client.on("messageCreate", async (message) => {
         message.content === "?lb"
     ) {
         berryLeaderboardCommand(API_URL, message);
+    }
+    if (message.content.startsWith("?role-income")) {
+        roleIncomeCommand(API_URL, message, client);
     }
 });
 
