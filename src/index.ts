@@ -9,6 +9,8 @@ import { fetch } from "bun";
 import berryAddCommand from "./commands/berryadd";
 import roleIncomeCommand from "./commands/roleIncome";
 import collectCommand from "./commands/collect";
+import withdraw from "./commands/withdraw";
+import deposit from "./commands/deposit";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -99,6 +101,12 @@ client.on("messageCreate", async (message) => {
     }
     if (message.content.startsWith("?collect")) {
         collectCommand(API_URL, message, client);
+    }
+    if (message.content.startsWith("?withdraw")) {
+        withdraw(API_URL, message, client);
+    }
+    if (message.content.startsWith("?deposit")) {
+        deposit(API_URL, message, client);
     }
 });
 

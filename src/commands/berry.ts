@@ -16,10 +16,30 @@ export default async function getBerryCommand(
     );
     const emojiString = berryEmoji ? `<:berry:${berryEmoji.id}>` : "🍓";
 
+    const fields = [
+        {
+            name: "Cash:",
+            value: `${emojiString}${data.berriesCash}`,
+            inline: false,
+        },
+
+        {
+            name: "Bank:",
+            value: `${emojiString}${data.berriesBank}`,
+            inline: false,
+        },
+
+        {
+            name: "Total:",
+            value: `${emojiString}${data.berriesCash + data.berriesBank}`,
+            inline: false,
+        },
+    ];
+
     message.reply(
         buildEmbed({
             author: message.author,
-            description: `${emojiString} You have **${data.berries}** berry!`,
+            fields,
             color: "#FFAC1C",
         }),
     );

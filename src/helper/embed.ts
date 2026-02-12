@@ -3,6 +3,7 @@ import {
     ButtonBuilder,
     ButtonStyle,
     EmbedBuilder,
+    User,
     type ColorResolvable,
 } from "discord.js";
 
@@ -13,12 +14,13 @@ interface EmbedButton {
 }
 
 interface BuildEmbedOptions {
-    author: any; // Discord message.author object
-    description: string;
+    author: User;
+    description?: string;
     color?: ColorResolvable;
     buttons?: EmbedButton[];
     title?: string;
     footer?: string;
+    fields?: { name: string; value: string; inline?: boolean }[];
 }
 
 export function buildEmbed(options: BuildEmbedOptions) {
@@ -29,6 +31,7 @@ export function buildEmbed(options: BuildEmbedOptions) {
         buttons = [],
         title,
         footer,
+        fields,
     } = options;
 
     const embed = new EmbedBuilder()
@@ -37,11 +40,12 @@ export function buildEmbed(options: BuildEmbedOptions) {
             name: author.username,
             iconURL: author.displayAvatarURL(),
         })
-        .setDescription(description)
         .setTimestamp();
 
+    if (description) embed.setDescription(description);
     if (title) embed.setTitle(title);
     if (footer) embed.setFooter({ text: footer });
+    if (fields) embed.addFields(fields);
 
     const components = [];
     if (buttons.length > 0) {

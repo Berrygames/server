@@ -2,7 +2,8 @@ import { buildEmbed } from "../helper/embed";
 
 export default async function berryAddCommand(url: string, message: any) {
     const mentionedUser = message.mentions.users.first();
-    const amount = parseInt(message.content.split(" ")[2] || "", 10) || 100; // Default to 100 if no amount provided
+    const location = message.content.split(" ")[2] || "cash";
+    const amount = parseInt(message.content.split(" ")[3] || "", 10) || 100;
 
     if (!mentionedUser) {
         message.reply(
@@ -36,6 +37,7 @@ export default async function berryAddCommand(url: string, message: any) {
             body: JSON.stringify({
                 toUserId: mentionedUser.id,
                 guildId: message.guildId,
+                location,
                 amount: amount,
             }),
         });
@@ -44,7 +46,7 @@ export default async function berryAddCommand(url: string, message: any) {
         message.reply(
             buildEmbed({
                 author: message.author,
-                description: `Gave ${amount} berries to ${mentionedUser.username}! They now have ${data.newCount} berries.`,
+                description: `Gave ${amount} berries to ${mentionedUser.username}'s ${data.location}!\nThey now have ${data.newCount} berries in their ${data.location}.`,
                 color: "#00FF00",
             }),
         );

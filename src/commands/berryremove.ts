@@ -2,7 +2,8 @@ import { buildEmbed } from "../helper/embed";
 
 export default async function berryRemoveCommand(url: string, message: any) {
     const mentionedUser = message.mentions.users.first();
-    const amount = parseInt(message.content.split(" ")[2] || "", 10) || 100; // Default to 100 if no amount provided
+    const location = message.content.split(" ")[2] || "cash";
+    const amount = parseInt(message.content.split(" ")[3] || "", 10) || 100; // Default to 100 if no amount provided
 
     if (!mentionedUser) {
         message.reply(
@@ -12,6 +13,17 @@ export default async function berryRemoveCommand(url: string, message: any) {
                 color: "#FF0000",
             }),
         );
+    }
+
+    if (location !== "cash" && location !== "bank") {
+        message.reply(
+            buildEmbed({
+                author: message.author,
+                description: "Please specify a valid location (cash or bank).",
+                color: "#FF0000",
+            }),
+        );
+        return;
     }
 
     if (amount <= 0) {
@@ -35,7 +47,8 @@ export default async function berryRemoveCommand(url: string, message: any) {
             body: JSON.stringify({
                 toUserId: mentionedUser.id,
                 guildId: message.guildId,
-                amount: amount, // Use the amount specified by the user
+                location,
+                amount: amount,
             }),
         });
 
@@ -43,7 +56,7 @@ export default async function berryRemoveCommand(url: string, message: any) {
         message.reply(
             buildEmbed({
                 author: message.author,
-                description: `Removed ${amount} berries from ${mentionedUser.username}. They now have ${data.newCount} berries.`,
+                description: `Removed ${amount} berries from ${mentionedUser.username}'s ${data.location}!\nThey now have ${data.newCount} berries in their ${data.location}.`,
                 color: "#00FF00",
             }),
         );

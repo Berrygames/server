@@ -29,8 +29,6 @@ export default async function collectCommand(
             (role: any) => role.id,
         );
 
-        console.log("User Roles:", userRoles);
-
         // Filter to roles user actually has
         const eligibleRoles = guild_roles.roles.filter((role: any) =>
             userRoles.includes(role.roleId),
@@ -47,8 +45,6 @@ export default async function collectCommand(
             );
             return;
         }
-
-        console.log("Eligible Roles:", eligibleRoles);
 
         // Collect from eligible roles
         const results = [];
@@ -69,7 +65,6 @@ export default async function collectCommand(
 
             const result = (await collectResponse.json()) as any;
 
-            console.log(`Collect result for role ${role.id}:`, result);
             results.push({ role, result });
 
             if (result.success) {
