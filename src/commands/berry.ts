@@ -5,8 +5,10 @@ export default async function getBerryCommand(
     message: any,
     client: any,
 ) {
+    const userId = message.mentions.users.first()?.id || message.author.id;
+    console.log("Checking ", userId, "'s balance.");
     const res = fetch(
-        `${url}/berry/${message.author.id}?guildId=${message.guildId}`,
+        `${url}/berry?userId=${userId}&guildId=${message.guildId}`,
     );
     const data = (await res.then((res) => res.json())) as any;
 

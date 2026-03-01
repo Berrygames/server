@@ -11,9 +11,7 @@ import roleIncomeCommand from "./commands/roleIncome";
 import collectCommand from "./commands/collect";
 import withdraw from "./commands/withdraw";
 import deposit from "./commands/deposit";
-
-const app = express();
-const PORT = process.env.PORT || 3000;
+import { commands } from "./helper/commands";
 
 const API_URL = "http://localhost:8787";
 
@@ -33,7 +31,7 @@ client.on("clientReady", async () => {
         const existingEmoji = emojis?.find((emoji) => emoji.name === "berry");
 
         if (!existingEmoji) {
-            const filepath = "assets/belli.png";
+            const filepath = "assets/berry.png";
             console.log("Full path:", `${process.cwd()}/${filepath}`);
             console.log("File exists:", await Bun.file(filepath).exists());
 
@@ -74,39 +72,74 @@ client.on("messageCreate", async (message) => {
     if (message.content === "?ping") {
         pingCommand(message);
     }
-    if (message.content === "?berry" || message.content === "?b") {
-        getBerryCommand(API_URL, message, client);
-    }
+
+    /*
+        ---------------
+        ADMIN COMMANDS
+        ---------------
+    */
     if (
         message.content.startsWith("?berryadd") ||
         message.content.startsWith("?ba")
     ) {
         berryAddCommand(API_URL, message);
-    }
-    if (
+    } else if (
         message.content.startsWith("?berryremove") ||
         message.content.startsWith("?br")
     ) {
         berryRemoveCommand(API_URL, message);
+    } else if (message.content.startsWith("?role-income")) {
+        roleIncomeCommand(API_URL, message, client);
     }
-    if (
-        message.content === "?berryleaderboard" ||
-        message.content === "?berrylb" ||
-        message.content === "?lb"
+
+    /*
+        --------------
+        USER COMMANDS
+        --------------
+    */
+    // berry leaderboard
+    else if (
+        commands["leaderboard"].commands.some((cmd) =>
+            message.content.startsWith(cmd),
+        )
     ) {
         berryLeaderboardCommand(API_URL, message);
     }
-    if (message.content.startsWith("?role-income")) {
-        roleIncomeCommand(API_URL, message, client);
-    }
-    if (message.content.startsWith("?collect")) {
+
+    // collect
+    else if (
+        commands["collect"].commands.some((cmd) =>
+            message.content.startsWith(cmd),
+        )
+    ) {
         collectCommand(API_URL, message, client);
     }
-    if (message.content.startsWith("?withdraw")) {
+
+    // withdraw
+    else if (
+        commands["withdraw"].commands.some((cmd) =>
+            message.content.startsWith(cmd),
+        )
+    ) {
         withdraw(API_URL, message, client);
     }
-    if (message.content.startsWith("?deposit")) {
+
+    // deposit
+    else if (
+        commands["deposit"].commands.some((cmd) =>
+            message.content.startsWith(cmd),
+        )
+    ) {
         deposit(API_URL, message, client);
+    }
+
+    // balance
+    else if (
+        commands["balance"].commands.some((cmd) =>
+            message.content.startsWith(cmd),
+        )
+    ) {
+        getBerryCommand(API_URL, message, client);
     }
 });
 

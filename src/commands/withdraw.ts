@@ -13,7 +13,7 @@ export default async function withdraw(url: string, message: any, client: any) {
     try {
         // Fetch user's current balance
         const balanceResponse = await fetch(
-            `${url}/berry/${message.author.id}?guildId=${message.guild.id}`,
+            `${url}/berry?userId=${message.author.id}&guildId=${message.guild.id}`,
         );
         const balanceData = (await balanceResponse.json()) as any;
 
