@@ -18,7 +18,7 @@ This project was created using `bun init` in bun v1.3.6. [Bun](https://bun.com) 
 
 [✅] Daily Credits / Pegged to roles
 [✅] Bank/ Cash
+[ ] Gambling: Roulette / ✅ Blackjack / Higher-lower / Coinflip / Dice roll / RPS / Lucky number/ Mine sweeper /
 [ ] Store / Rewards
-[ ] Gambling: Roulette / Blackjack / Higher-lower / Coinflip / Dice roll / RPS / Lucky number/ Mine sweeper /
 [ ] Blacktea/ Greentea/ Redtea
 [ ] Flag game
